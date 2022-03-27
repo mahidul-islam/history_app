@@ -5,6 +5,7 @@ import 'package:sirah/timeline/ticks.dart';
 import "dart:ui" as ui;
 
 import 'package:sirah/timeline/timeline.dart';
+import 'package:sirah/timeline/timeline_entry.dart';
 
 class TimelineRenderWidget extends LeafRenderObjectWidget {
   final Timeline timeline;
@@ -77,40 +78,44 @@ class TimelineRenderObject extends RenderBox {
     double scale = size.height / (renderEnd - renderStart);
 
     //canvas.drawRect(new Offset(0.0, 0.0) & new Size(100.0, 100.0), new Paint()..color = Colors.red);
-    _ticks.paint(context, offset, -renderStart * scale, scale, size.height);
+    _ticks.paint(
+        context, offset, -renderStart * scale, scale, size.height, timeline);
 
     if (timeline.renderAssets != null) {
       canvas.save();
-      for (TimelineEntryAsset asset in timeline.renderAssets) {
+      for (TimelineAsset asset in timeline.renderAssets) {
         if (asset.opacity > 0) {
-          //ctx.globalAlpha = asset.opacity;
           double rs = 0.2 + asset.scale * 0.8;
 
-          double w = asset.width! * Timeline.assetScreenScale;
-          double h = asset.height! * Timeline.assetScreenScale;
-          canvas.drawImageRect(
-              asset.image,
-              Rect.fromLTWH(0.0, 0.0, asset.width!, asset.height!),
-              Rect.fromLTWH(
-                  offset.dx + size.width - w, asset.y, w * rs, h * rs),
-              Paint()
-                ..isAntiAlias = true
-                ..filterQuality = ui.FilterQuality.low
-                ..color = Colors.white.withOpacity(asset.opacity));
+          double w = asset.width! * Timeline.AssetScreenScale;
+          double h = asset.height! * Timeline.AssetScreenScale;
+
+          /// Draw the correct asset.
+          if (asset is TimelineImage) {
+            canvas.drawImageRect(
+                asset.image!,
+                Rect.fromLTWH(0.0, 0.0, asset.width!, asset.height!),
+                Rect.fromLTWH(
+                    offset.dx + size.width - w, asset.y, w * rs, h * rs),
+                Paint()
+                  ..isAntiAlias = true
+                  ..filterQuality = ui.FilterQuality.low
+                  ..color = Colors.white.withOpacity(asset.opacity));
+          }
         }
       }
       canvas.restore();
     }
     if (_timeline.entries != null) {
       canvas.save();
-      canvas.clipRect(Rect.fromLTWH(offset.dx + Timeline.gutterLeft, offset.dy,
-          size.width - Timeline.gutterLeft, size.height));
+      canvas.clipRect(Rect.fromLTWH(offset.dx + Timeline.GutterLeft, offset.dy,
+          size.width - Timeline.GutterLeft, size.height));
       drawItems(
           context,
           offset,
           _timeline.entries,
-          Timeline.marginLeft -
-              Timeline.depthOffset * _timeline.renderOffsetDepth,
+          (Timeline.GutterLeft + Timeline.LineSpacing) -
+              Timeline.DepthOffset * _timeline.renderOffsetDepth,
           scale,
           0);
       canvas.restore();
@@ -123,15 +128,15 @@ class TimelineRenderObject extends RenderBox {
 
     for (TimelineEntry item in entries) {
       if (!item.isVisible ||
-          item.y > size.height + Timeline.bubbleHeight ||
-          item.endY < -Timeline.bubbleHeight) {
+          item.y > size.height + _timeline.bubbleHeight(item) ||
+          item.endY < -_timeline.bubbleHeight(item)) {
         continue;
       }
 
       double legOpacity = item.legOpacity * item.opacity;
       canvas.drawCircle(
-          Offset(x + Timeline.lineWidth / 2.0, item.y),
-          Timeline.edgeRadius,
+          Offset(x + Timeline.LineWidth / 2.0, item.y),
+          Timeline.EdgeRadius,
           Paint()
             ..color = lineColors[depth % lineColors.length]
                 .withOpacity(item.opacity));
@@ -140,11 +145,11 @@ class TimelineRenderObject extends RenderBox {
           ..color =
               lineColors[depth % lineColors.length].withOpacity(legOpacity);
         canvas.drawRect(
-            Offset(x, item.y) & Size(Timeline.lineWidth, item.length),
+            Offset(x, item.y) & Size(Timeline.LineWidth, item.length),
             legPaint);
         canvas.drawCircle(
-            Offset(x + Timeline.lineWidth / 2.0, item.y + item.length),
-            Timeline.edgeRadius,
+            Offset(x + Timeline.LineWidth / 2.0, item.y + item.length),
+            Timeline.EdgeRadius,
             legPaint);
       }
 
@@ -157,7 +162,7 @@ class TimelineRenderObject extends RenderBox {
         ..pushStyle(
             ui.TextStyle(color: const Color.fromRGBO(255, 255, 255, 1.0)));
 
-      builder.addText(item.label!);
+      builder.addText(item.label);
       ui.Paragraph labelParagraph = builder.build();
       labelParagraph
           .layout(const ui.ParagraphConstraints(width: maxLabelWidth));
@@ -169,7 +174,7 @@ class TimelineRenderObject extends RenderBox {
       // ctx.save();
       // let bubbleX = labelX-DepthOffset*renderOffsetDepth;
       double bubbleX = _timeline.renderLabelX -
-          Timeline.depthOffset * _timeline.renderOffsetDepth;
+          Timeline.DepthOffset * _timeline.renderOffsetDepth;
       double bubbleY = item.labelY - bubbleHeight / 2.0;
       canvas.save();
       canvas.translate(bubbleX, bubbleY);
@@ -193,7 +198,7 @@ class TimelineRenderObject extends RenderBox {
       // 	canvas.drawImageRect(item.asset.image, Rect.fromLTWH(0.0, 0.0, item.asset.width, item.asset.height), Rect.fromLTWH(bubbleX + textWidth + BubblePadding*2.0, bubbleY, item.asset.width, item.asset.height), new Paint()..isAntiAlias=true..filterQuality=ui.FilterQuality.low);
       // }
       if (item.children != null) {
-        drawItems(context, offset, item.children!, x + Timeline.depthOffset,
+        drawItems(context, offset, item.children!, x + Timeline.DepthOffset,
             scale, depth + 1);
       }
     }

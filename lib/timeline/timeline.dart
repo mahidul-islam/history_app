@@ -4,46 +4,48 @@ import 'dart:typed_data';
 import "package:flutter/scheduler.dart";
 import "dart:ui" as ui;
 import "package:flutter/services.dart" show rootBundle;
+import 'package:sirah/timeline/timeline_entry.dart';
+import 'package:sirah/timeline/timeline_utlis.dart';
 
 typedef PaintCallback = Function();
 
-enum TimelineEntryType { era, incident }
+// enum TimelineEntryType { era, incident }
 
-class TimelineEntryAsset {
-  late ui.Image image;
-  double? width;
-  double? height;
-  double opacity = 0.0;
-  double scale = 0.0;
-  double scaleVelocity = 0.0;
-  double y = 0.0;
-  double velocity = 0.0;
-}
+// class TimelineEntryAsset {
+//   late ui.Image image;
+//   double? width;
+//   double? height;
+//   double opacity = 0.0;
+//   double scale = 0.0;
+//   double scaleVelocity = 0.0;
+//   double y = 0.0;
+//   double velocity = 0.0;
+// }
 
-class TimelineEntry {
-  late TimelineEntryType type;
-  double? start;
-  double? end;
-  String? label;
+// class TimelineEntry {
+//   late TimelineEntryType type;
+//   double? start;
+//   double? end;
+//   String? label;
 
-  TimelineEntry? parent;
-  List<TimelineEntry>? children;
+//   TimelineEntry? parent;
+//   List<TimelineEntry>? children;
 
-  double y = 0.0;
-  double endY = 0.0;
-  double length = 0.0;
-  double opacity = 0.0;
-  double labelOpacity = 0.0;
-  double legOpacity = 0.0;
-  double labelY = 0.0;
-  double labelVelocity = 0.0;
+//   double y = 0.0;
+//   double endY = 0.0;
+//   double length = 0.0;
+//   double opacity = 0.0;
+//   double labelOpacity = 0.0;
+//   double legOpacity = 0.0;
+//   double labelY = 0.0;
+//   double labelVelocity = 0.0;
 
-  bool get isVisible {
-    return opacity > 0.0;
-  }
+//   bool get isVisible {
+//     return opacity > 0.0;
+//   }
 
-  TimelineEntryAsset? asset;
-}
+//   TimelineEntryAsset? asset;
+// }
 
 class Timeline {
   double _start = 0.0;
@@ -54,7 +56,7 @@ class Timeline {
   double _lastFrameTime = 0.0;
   double _height = 0.0;
   List<TimelineEntry>? _entries;
-  List<TimelineEntryAsset>? _renderAssets;
+  List<TimelineAsset>? _renderAssets;
   double _lastEntryY = 0.0;
   double _offsetDepth = 0.0;
   double _renderOffsetDepth = 0.0;
@@ -67,7 +69,7 @@ class Timeline {
   List<TimelineEntry> get entries => _entries ?? [];
   double get renderOffsetDepth => _renderOffsetDepth;
   double get renderLabelX => _renderLabelX;
-  List<TimelineEntryAsset> get renderAssets => _renderAssets ?? [];
+  List<TimelineAsset> get renderAssets => _renderAssets ?? [];
 
   PaintCallback? onNeedPaint;
   double get start => _start;
@@ -75,25 +77,33 @@ class Timeline {
   double get renderStart => _renderStart ?? 0;
   double get renderEnd => _renderEnd ?? 0;
 
-  static const double lineWidth = 2.0;
-  static const double lineSpacing = 10.0;
-  static const double depthOffset = lineSpacing + lineWidth;
+  /// Some aptly named constants for properly aligning the Timeline view.
+  static const double LineWidth = 2.0;
+  static const double LineSpacing = 10.0;
+  static const double DepthOffset = LineSpacing + LineWidth;
 
-  static const double edgePadding = 8.0;
-  static const double fadeAnimationStart = 55.0;
-  static const double moveSpeed = 20.0;
-  static const double deceleration = 9.0;
-  static const double gutterLeft = 45.0;
+  static const double EdgePadding = 8.0;
+  static const double MoveSpeed = 10.0;
+  static const double MoveSpeedInteracting = 40.0;
+  static const double Deceleration = 3.0;
+  static const double GutterLeft = 45.0;
+  static const double GutterLeftExpanded = 75.0;
 
-  static const double edgeRadius = 4.0;
-  static const double minChildLength = 50.0;
-  static const double marginLeft = gutterLeft + lineSpacing;
-  static const double bubbleHeight = 50.0;
-  static const double bubbleArrowSize = 19.0;
-  static const double bubblePadding = 20.0;
-  static const double assetPadding = 30.0;
-  static const double parallax = 100.0;
-  static const double assetScreenScale = 0.3;
+  static const double EdgeRadius = 4.0;
+  static const double MinChildLength = 50.0;
+  static const double BubbleHeight = 50.0;
+  static const double BubbleArrowSize = 19.0;
+  static const double BubblePadding = 20.0;
+  static const double BubbleTextHeight = 20.0;
+  static const double AssetPadding = 30.0;
+  static const double Parallax = 100.0;
+  static const double AssetScreenScale = 0.3;
+  static const double InitialViewportPadding = 100.0;
+  static const double TravelViewportPaddingTop = 400.0;
+
+  static const double ViewportPaddingTop = 120.0;
+  static const double ViewportPaddingBottom = 100.0;
+  static const int SteadyMilliseconds = 500;
 
   Timeline() {
     loadFromBundle("assets/timeline.json").then((bool success) {
@@ -104,8 +114,8 @@ class Timeline {
             : _height / (_entries!.first.end! - _entries!.first.start!);
         // We use the scale to pad by the bubble height when we set the first range.
         setViewport(
-            start: _entries!.first.start! - bubbleHeight / scale,
-            end: _entries!.first.end! + bubbleHeight / scale,
+            start: _entries!.first.start! - BubbleHeight / scale,
+            end: _entries!.first.end! + BubbleHeight / scale,
             animate: true);
         advance(0.0, false);
       }
@@ -123,11 +133,11 @@ class Timeline {
       if (map != null) {
         TimelineEntry timelineEntry = TimelineEntry();
         if (map.containsKey("date")) {
-          timelineEntry.type = TimelineEntryType.incident;
+          timelineEntry.type = TimelineEntryType.Incident;
           dynamic date = map["date"];
           timelineEntry.start = date is int ? date.toDouble() : date;
         } else if (map.containsKey("start")) {
-          timelineEntry.type = TimelineEntryType.era;
+          timelineEntry.type = TimelineEntryType.Era;
           dynamic start = map["start"];
           timelineEntry.start = start is int ? start.toDouble() : start;
         } else {
@@ -137,7 +147,7 @@ class Timeline {
         if (map.containsKey("end")) {
           dynamic end = map["end"];
           timelineEntry.end = end is int ? end.toDouble() : end;
-        } else if (timelineEntry.type == TimelineEntryType.era) {
+        } else if (timelineEntry.type == TimelineEntryType.Era) {
           timelineEntry.end = DateTime.now().year.toDouble();
         } else {
           timelineEntry.end = timelineEntry.start;
@@ -148,14 +158,16 @@ class Timeline {
         }
 
         if (map.containsKey("asset")) {
-          TimelineEntryAsset asset = TimelineEntryAsset();
+          TimelineAsset asset = TimelineAsset();
           Map assetMap = map["asset"] as Map;
           String source = assetMap["source"];
           ByteData data = await rootBundle.load("assets/" + source);
           Uint8List list = Uint8List.view(data.buffer);
           ui.Codec codec = await ui.instantiateImageCodec(list);
           ui.FrameInfo frame = await codec.getNextFrame();
-          asset.image = frame.image;
+          TimelineImage _imageAsset = TimelineImage();
+          asset = _imageAsset;
+          _imageAsset.image = frame.image;
 
           dynamic width = assetMap["width"];
           asset.width = width is int ? width.toDouble() : width;
@@ -183,7 +195,7 @@ class Timeline {
       TimelineEntry? parent;
       double minDistance = double.maxFinite;
       for (TimelineEntry checkEntry in allEntries) {
-        if (checkEntry.type == TimelineEntryType.era) {
+        if (checkEntry.type == TimelineEntryType.Era) {
           double distance = entry.start! - checkEntry.start!;
           double distanceEnd = entry.start! - checkEntry.end!;
           if (distance > 0 && distanceEnd < 0 && distance < minDistance) {
@@ -220,8 +232,8 @@ class Timeline {
     if (height != double.maxFinite) {
       if (_height == 0.0 && _entries != null && _entries!.isNotEmpty) {
         double scale = height / (_entries!.first.end! - _entries!.first.start!);
-        _start = _start + bubbleHeight / scale;
-        _end = _end - bubbleHeight / scale;
+        _start = _start + BubbleHeight / scale;
+        _end = _end - BubbleHeight / scale;
       }
       _height = height;
     }
@@ -268,13 +280,13 @@ class Timeline {
     double scale = _height / (_renderEnd! - _renderStart!);
 
     // Attenuate velocity and displace targets.
-    _velocity *= 1.0 - min(1.0, elapsed * deceleration);
+    _velocity *= 1.0 - min(1.0, elapsed * Deceleration);
     double displace = _velocity * elapsed;
     _start -= displace;
     _end -= displace;
 
     // Animate movement.
-    double speed = min(1.0, elapsed * moveSpeed);
+    double speed = min(1.0, elapsed * MoveSpeed);
     double ds = _start - _renderStart!;
     double de = _end - _renderEnd!;
 
@@ -299,11 +311,12 @@ class Timeline {
     _offsetDepth = 0.0;
 
     if (_entries != null) {
-      if (advanceItems(_entries!, marginLeft, scale, elapsed, animate, 0)) {
+      if (advanceItems(
+          _entries!, GutterLeft + LineSpacing, scale, elapsed, animate, 0)) {
         doneRendering = false;
       }
 
-      _renderAssets = <TimelineEntryAsset>[];
+      _renderAssets = <TimelineAsset>[];
       if (advanceAssets(_entries!, elapsed, animate, _renderAssets!)) {
         doneRendering = false;
       }
@@ -319,7 +332,7 @@ class Timeline {
 
     if (!isInteracting && !isScaling) {
       double dd = _offsetDepth - renderOffsetDepth;
-      if (!animate || dd.abs() * depthOffset < 1.0) {
+      if (!animate || dd.abs() * DepthOffset < 1.0) {
         _renderOffsetDepth = _offsetDepth;
       } else {
         doneRendering = false;
@@ -328,6 +341,15 @@ class Timeline {
     }
 
     return doneRendering;
+  }
+
+  /// Compute the viewport scale from the start/end times.
+  double computeScale(double start, double end) {
+    return _height == 0.0 ? 1.0 : _height / (end - start);
+  }
+
+  double bubbleHeight(TimelineEntry entry) {
+    return BubblePadding * 2.0 + entry.lineCount * BubbleTextHeight;
   }
 
   bool advanceItems(List<TimelineEntry> items, double x, double scale,
@@ -340,22 +362,39 @@ class Timeline {
       TimelineEntry item = items[i];
 
       double start = item.start! - _renderStart!;
-      double end = item.type == TimelineEntryType.era
+      double end = item.type == TimelineEntryType.Era
           ? item.end! - _renderStart!
           : start;
-      // double length = (end-start)*scale-2*EdgePadding;
-      // double pad = EdgePadding;//(length/EdgePadding).clamp(0.0, 1.0)*EdgePadding;
 
-      //item.length = length = max(0.0, (end-start)*scale-pad*2.0);
+      /// Vertical position for this element.
+      double y = start * scale;
 
-      double y = start * scale; //+pad;
-      if (i > 0 && y - lastEnd < edgePadding) {
-        y = lastEnd + edgePadding;
+      ///+pad;
+      if (i > 0 && y - lastEnd < EdgePadding) {
+        y = lastEnd + EdgePadding;
       }
-      double endY = end * scale; //-pad;
+
+      /// Adjust based on current scale value.
+      double endY = end * scale;
+
+      ///-pad;
+      /// Update the reference to the last found element.
       lastEnd = endY;
 
       item.length = endY - y;
+
+      /// Calculate the best location for the bubble/label.
+      double targetLabelY = y;
+      double itemBubbleHeight = bubbleHeight(item);
+      double fadeAnimationStart = itemBubbleHeight + BubblePadding / 2.0;
+      if (targetLabelY - _lastEntryY < fadeAnimationStart
+
+          /// The best location for our label is occluded, lets see if we can bump it forward...
+          &&
+          item.type == TimelineEntryType.Era &&
+          _lastEntryY + fadeAnimationStart < endY) {
+        targetLabelY = _lastEntryY + fadeAnimationStart + 0.5;
+      }
 
       double targetLabelOpacity =
           y - _lastEntryY < fadeAnimationStart ? 0.0 : 1.0;
@@ -370,7 +409,7 @@ class Timeline {
       item.y = y;
       item.endY = endY;
 
-      double targetLegOpacity = item.length > edgeRadius ? 1.0 : 0.0;
+      double targetLegOpacity = item.length > EdgeRadius ? 1.0 : 0.0;
       double dtl = targetLegOpacity - item.legOpacity;
       if (!animate || dtl.abs() < 0.01) {
         item.legOpacity = targetLegOpacity;
@@ -380,7 +419,7 @@ class Timeline {
       }
 
       double targetItemOpacity = item.parent != null
-          ? item.parent!.length < minChildLength ||
+          ? item.parent!.length < MinChildLength ||
                   (item.parent != null && item.parent!.endY < y)
               ? 0.0
               : y > item.parent!.y
@@ -417,25 +456,25 @@ class Timeline {
 
       _lastEntryY = y;
 
-      if (item.type == TimelineEntryType.era &&
+      if (item.type == TimelineEntryType.Era &&
           y < 0 &&
           endY > _height &&
           depth > _offsetDepth) {
         _offsetDepth = depth.toDouble();
       }
 
-      if (y > _height + bubbleHeight || endY < -bubbleHeight) {
+      if (y > _height + BubbleHeight || endY < -BubbleHeight) {
         item.labelY = y;
         continue;
       }
 
-      double lx = x + lineSpacing + lineSpacing;
+      double lx = x + LineSpacing + LineSpacing;
       if (lx > _labelX) {
         _labelX = lx;
       }
 
       if (item.children != null && item.isVisible) {
-        if (advanceItems(item.children!, x + lineSpacing + lineWidth, scale,
+        if (advanceItems(item.children!, x + LineSpacing + LineWidth, scale,
             elapsed, animate, depth + 1)) {
           stillAnimating = true;
         }
@@ -445,7 +484,7 @@ class Timeline {
   }
 
   bool advanceAssets(List<TimelineEntry> items, double elapsed, bool animate,
-      List<TimelineEntryAsset> renderAssets) {
+      List<TimelineAsset> renderAssets) {
     bool stillAnimating = false;
     for (TimelineEntry item in items) {
       if (item.asset != null) {
@@ -453,9 +492,9 @@ class Timeline {
         double halfHeight = _height / 2.0;
         double thresholdAssetY = y +
             ((y - halfHeight) / halfHeight) *
-                parallax; //item.asset.height*AssetScreenScale/2.0;
+                Parallax; //item.asset.height*AssetScreenScale/2.0;
         double targetAssetY =
-            thresholdAssetY - item.asset!.height! * assetScreenScale / 2.0;
+            thresholdAssetY - item.asset!.height! * AssetScreenScale / 2.0;
         double targetAssetOpacity =
             (thresholdAssetY - _lastAssetY < 0 ? 0.0 : 1.0) *
                 item.opacity *
@@ -510,8 +549,8 @@ class Timeline {
 
           _lastAssetY = /*item.assetY*/ targetAssetY +
               item.asset!.height! *
-                  assetScreenScale /*renderScale(item.asset.scale)*/ +
-              assetPadding;
+                  AssetScreenScale /*renderScale(item.asset.scale)*/ +
+              AssetPadding;
         } else {
           item.asset!.y = max(_lastAssetY, targetAssetY);
         }
