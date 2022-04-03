@@ -1,5 +1,5 @@
 import 'timeline/timeline_widget.dart';
-import 'main_menu/main_menu.dart';
+// import 'main_menu/main_menu.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -30,32 +30,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  static final Animatable<Offset> _slideTween = Tween<Offset>(
-    begin: const Offset(0.0, 0.0),
-    end: const Offset(-1.0, 0.0),
-  ).chain(CurveTween(
-    curve: Curves.fastOutSlowIn,
-  ));
+  // late AnimationController _controller;
+  // static final Animatable<Offset> _slideTween = Tween<Offset>(
+  //   begin: const Offset(0.0, 0.0),
+  //   end: const Offset(-1.0, 0.0),
+  // ).chain(CurveTween(
+  //   curve: Curves.fastOutSlowIn,
+  // ));
 
-  Animation<Offset>? _menuOffset;
+  // Animation<Offset>? _menuOffset;
   @override
   initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    _menuOffset = _controller.drive(_slideTween);
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(milliseconds: 200),
+    // );
+    // _menuOffset = _controller.drive(_slideTween);
   }
 
-  void _onHideMenu() {
-    _controller.forward();
-  }
+  // void _onHideMenu() {
+  //   _controller.forward();
+  // }
 
-  void _onShowMenu() {
-    _controller.reverse();
-  }
+  // void _onShowMenu() {
+  //   _controller.reverse();
+  // }
 
   @override
   Widget build(BuildContext context) {
