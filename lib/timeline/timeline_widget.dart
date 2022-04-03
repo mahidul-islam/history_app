@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sirah/article/article_widget.dart';
 import 'package:sirah/timeline/timeline.dart';
 import 'package:sirah/timeline/timeline_render_widget.dart';
+import 'package:sirah/timeline/timeline_utlis.dart';
 
 typedef ShowMenuCallback = Function();
 
@@ -19,12 +21,28 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   double _scaleStartYearStart = -100.0;
   double _scaleStartYearEnd = 100.0;
 
+  TapTarget? _touchedBubble;
+
   void _scaleStart(ScaleStartDetails details) {
     _lastFocalPoint = details.focalPoint;
     _scaleStartYearStart = _timeline.start;
     _scaleStartYearEnd = _timeline.end;
     _timeline.isInteracting = true;
     _timeline.setViewport(velocity: 0.0, animate: true);
+  }
+
+  void _tapUp(TapUpDetails details) {
+    if (_touchedBubble != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  ArticleWidget(article: _touchedBubble!.entry!)))
+          .then((value) => _touchedBubble = null);
+    }
+  }
+
+  onTouchBubble(TapTarget? bubble) {
+    _touchedBubble = bubble;
   }
 
   void _scaleUpdate(ScaleUpdateDetails details) {
@@ -56,9 +74,12 @@ class _TimelineWidgetState extends State<TimelineWidget> {
         onScaleStart: _scaleStart,
         onScaleUpdate: _scaleUpdate,
         onScaleEnd: _scaleEnd,
-        //onTapUp: _tapUp,
+        onTapUp: _tapUp,
         child: Stack(children: <Widget>[
-          TimelineRenderWidget(timeline: _timeline),
+          TimelineRenderWidget(
+            timeline: _timeline,
+            touchBubble: onTouchBubble,
+          ),
           Container(
               // padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
               color: const Color.fromRGBO(238, 240, 242, 0.81),

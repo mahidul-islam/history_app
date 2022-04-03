@@ -14,6 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
+  flutter_markdown: ^0.6.9+1
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +30,4 @@ flutter:
     - assets/search_icon.png
     - assets/flutter_logo.png
     - assets/right_arrow.png
+    - assets/articles/

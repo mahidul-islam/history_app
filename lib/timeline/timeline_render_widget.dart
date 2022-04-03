@@ -4,21 +4,34 @@ import "dart:ui" as ui;
 
 import 'package:sirah/timeline/timeline.dart';
 import 'package:sirah/timeline/timeline_entry.dart';
+import 'package:sirah/timeline/timeline_utlis.dart';
+
+/// These two callbacks are used to detect if a bubble or an entry have been tapped.
+/// If that's the case, [ArticlePage] will be pushed onto the [Navigator] stack.
+typedef TouchBubbleCallback = Function(TapTarget? bubble);
 
 class TimelineRenderWidget extends LeafRenderObjectWidget {
   final Timeline timeline;
-  const TimelineRenderWidget({Key? key, required this.timeline})
-      : super(key: key);
+  final TouchBubbleCallback touchBubble;
+  const TimelineRenderWidget({
+    Key? key,
+    required this.timeline,
+    required this.touchBubble,
+  }) : super(key: key);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return TimelineRenderObject()..timeline = timeline;
+    return TimelineRenderObject()
+      ..timeline = timeline
+      ..touchBubble = touchBubble;
   }
 
   @override
   void updateRenderObject(
       BuildContext context, covariant TimelineRenderObject renderObject) {
-    renderObject.timeline = timeline;
+    renderObject
+      ..timeline = timeline
+      ..touchBubble = touchBubble;
   }
 }
 
@@ -33,6 +46,8 @@ class TimelineRenderObject extends RenderBox {
 
   final Ticks _ticks = Ticks();
   Timeline _timeline = Timeline();
+  List<TapTarget> _tapTargets = <TapTarget>[];
+  TouchBubbleCallback? touchBubble;
 
   Timeline get timeline => _timeline;
   set timeline(Timeline value) {
@@ -49,8 +64,21 @@ class TimelineRenderObject extends RenderBox {
   @override
   bool get sizedByParent => true;
 
+  /// Check if the current tap on the screen has hit a bubble.
   @override
-  bool hitTestSelf(Offset position) => true;
+  bool hitTestSelf(Offset screenOffset) {
+    for (TapTarget bubble in _tapTargets.reversed) {
+      if (bubble.rect?.contains(screenOffset) ?? false) {
+        if (touchBubble != null) {
+          touchBubble!(bubble);
+        }
+        return true;
+      }
+    }
+    touchBubble!(null);
+
+    return true;
+  }
 
   @override
   void performResize() {
@@ -123,6 +151,7 @@ class TimelineRenderObject extends RenderBox {
   void drawItems(PaintingContext context, Offset offset,
       List<TimelineEntry> entries, double x, double scale, int depth) {
     final Canvas canvas = context.canvas;
+    const double BubblePadding = 20.0;
 
     for (TimelineEntry item in entries) {
       if (!item.isVisible ||
@@ -185,7 +214,10 @@ class TimelineRenderObject extends RenderBox {
                 .withOpacity(item.opacity * item.labelOpacity * 0.95));
       canvas
           .clipRect(Rect.fromLTWH(bubblePadding, 0.0, textWidth, bubbleHeight));
-
+      _tapTargets.add(TapTarget()
+        ..entry = item
+        ..rect = Rect.fromLTWH(
+            bubbleX, bubbleY, textWidth + BubblePadding * 2.0, bubbleHeight));
       canvas.drawParagraph(
           labelParagraph,
           Offset(
