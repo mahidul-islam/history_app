@@ -1,6 +1,4 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:sirah/timeline/timeline.dart';
 import 'package:sirah/timeline/timeline_render_widget.dart';
 
@@ -62,6 +60,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
         child: Stack(children: <Widget>[
           TimelineRenderWidget(timeline: _timeline),
           Container(
+              // padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
               color: const Color.fromRGBO(238, 240, 242, 0.81),
               height: 56.0,
               width: double.infinity,

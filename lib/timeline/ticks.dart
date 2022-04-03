@@ -1,10 +1,9 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:sirah/timeline/timeline.dart';
-import 'package:sirah/timeline/timeline_utlis.dart';
 
 /// This class is used by the [TimelineRenderWidget] to render the ticks on the left side of the screen.
 ///
@@ -38,6 +37,7 @@ class Ticks {
 
     /// Calculate spacing based on current scale
     double scaledTickDistance = tickDistance * scale;
+    // print('sTD: $scaledTickDistance, $scale');
     if (scaledTickDistance > 2 * TickDistance) {
       while (scaledTickDistance > 2 * TickDistance && tickDistance >= 2.0) {
         scaledTickDistance /= 2.0;
@@ -51,9 +51,13 @@ class Ticks {
         textTickDistance *= 2.0;
       }
     }
+    // print('sTD: $scaledTickDistance, $scale');
 
     /// The number of ticks to draw.
     int numTicks = (height / scaledTickDistance).ceil() + 2;
+    // if (kDebugMode) {
+    //   print('zihan:  $numTicks,');
+    // }
     if (scaledTickDistance > TextTickDistance) {
       textTickDistance = tickDistance;
     }
@@ -68,57 +72,10 @@ class Ticks {
     /// Move back by one tick.
     tickOffset -= scaledTickDistance;
     startingTickMarkValue -= tickDistance;
-
-    /// Ticks can change color because the timeline background will also change color
-    /// depending on the current era. The [TickColors] object, in `timeline_utils.dart`,
-    /// wraps this information.
-    // List<TickColors> tickColors = timeline.tickColors;
-    // if (tickColors != null && tickColors.length > 0) {
-    //   /// Build up the color stops for the linear gradient.
-    //   double rangeStart = tickColors.first.start;
-    //   double range = tickColors.last.start - tickColors.first.start;
-    //   List<ui.Color> colors = <ui.Color>[];
-    //   List<double> stops = <double>[];
-    //   for (TickColors bg in tickColors) {
-    //     colors.add(bg.background ?? Colors.white30);
-    //     stops.add((bg.start! - rangeStart) / range);
-    //   }
-    //   double s =
-    //       timeline.computeScale(timeline.renderStart, timeline.renderEnd);
-
-    //   /// y-coordinate for the starting and ending element.
-    //   double y1 = (tickColors.first.start - timeline.renderStart) * s;
-    //   double y2 = (tickColors.last.start - timeline.renderStart) * s;
-
-    //   /// Fill Background.
-    //   ui.Paint paint = ui.Paint()
-    //     ..shader = ui.Gradient.linear(
-    //         ui.Offset(0.0, y1), ui.Offset(0.0, y2), colors, stops)
-    //     ..style = ui.PaintingStyle.fill;
-
-    //   /// Fill in top/bottom if necessary.
-    //   if (y1 > offset.dy) {
-    //     canvas.drawRect(
-    //         Rect.fromLTWH(
-    //             offset.dx, offset.dy, gutterWidth, y1 - offset.dy + 1.0),
-    //         ui.Paint()..color = tickColors.first.background);
-    //   }
-    //   if (y2 < offset.dy + height) {
-    //     canvas.drawRect(
-    //         Rect.fromLTWH(
-    //             offset.dx, y2 - 1, gutterWidth, (offset.dy + height) - y2),
-    //         ui.Paint()..color = tickColors.last.background);
-    //   }
-
-    //   /// Draw the gutter.
-    //   canvas.drawRect(
-    //       Rect.fromLTWH(offset.dx, y1, gutterWidth, y2 - y1), paint);
-    // } else {
     canvas.drawRect(Rect.fromLTWH(offset.dx, offset.dy, gutterWidth, height),
-        Paint()..color = Color.fromRGBO(246, 246, 246, 0.95));
-    // }
+        Paint()..color = const Color.fromRGBO(246, 246, 246, 0.95));
 
-    Set<String> usedValues = Set<String>();
+    Set<String> usedValues = <String>{};
 
     /// Draw all the ticks.
     for (int i = 0; i < numTicks; i++) {

@@ -130,54 +130,52 @@ class Timeline {
     for (dynamic entry in jsonEntries) {
       Map map = entry as Map;
 
-      if (map != null) {
-        TimelineEntry timelineEntry = TimelineEntry();
-        if (map.containsKey("date")) {
-          timelineEntry.type = TimelineEntryType.Incident;
-          dynamic date = map["date"];
-          timelineEntry.start = date is int ? date.toDouble() : date;
-        } else if (map.containsKey("start")) {
-          timelineEntry.type = TimelineEntryType.Era;
-          dynamic start = map["start"];
-          timelineEntry.start = start is int ? start.toDouble() : start;
-        } else {
-          continue;
-        }
-
-        if (map.containsKey("end")) {
-          dynamic end = map["end"];
-          timelineEntry.end = end is int ? end.toDouble() : end;
-        } else if (timelineEntry.type == TimelineEntryType.Era) {
-          timelineEntry.end = DateTime.now().year.toDouble();
-        } else {
-          timelineEntry.end = timelineEntry.start;
-        }
-
-        if (map.containsKey("label")) {
-          timelineEntry.label = map["label"] as String;
-        }
-
-        if (map.containsKey("asset")) {
-          TimelineAsset asset = TimelineAsset();
-          Map assetMap = map["asset"] as Map;
-          String source = assetMap["source"];
-          ByteData data = await rootBundle.load("assets/" + source);
-          Uint8List list = Uint8List.view(data.buffer);
-          ui.Codec codec = await ui.instantiateImageCodec(list);
-          ui.FrameInfo frame = await codec.getNextFrame();
-          TimelineImage _imageAsset = TimelineImage();
-          asset = _imageAsset;
-          _imageAsset.image = frame.image;
-
-          dynamic width = assetMap["width"];
-          asset.width = width is int ? width.toDouble() : width;
-          dynamic height = assetMap["height"];
-          asset.height = height is int ? height.toDouble() : height;
-
-          timelineEntry.asset = asset;
-        }
-        allEntries.add(timelineEntry);
+      TimelineEntry timelineEntry = TimelineEntry();
+      if (map.containsKey("date")) {
+        timelineEntry.type = TimelineEntryType.Incident;
+        dynamic date = map["date"];
+        timelineEntry.start = date is int ? date.toDouble() : date;
+      } else if (map.containsKey("start")) {
+        timelineEntry.type = TimelineEntryType.Era;
+        dynamic start = map["start"];
+        timelineEntry.start = start is int ? start.toDouble() : start;
+      } else {
+        continue;
       }
+
+      if (map.containsKey("end")) {
+        dynamic end = map["end"];
+        timelineEntry.end = end is int ? end.toDouble() : end;
+      } else if (timelineEntry.type == TimelineEntryType.Era) {
+        timelineEntry.end = DateTime.now().year.toDouble();
+      } else {
+        timelineEntry.end = timelineEntry.start;
+      }
+
+      if (map.containsKey("label")) {
+        timelineEntry.label = map["label"] as String;
+      }
+
+      if (map.containsKey("asset")) {
+        TimelineAsset asset = TimelineAsset();
+        Map assetMap = map["asset"] as Map;
+        String source = assetMap["source"];
+        ByteData data = await rootBundle.load("assets/" + source);
+        Uint8List list = Uint8List.view(data.buffer);
+        ui.Codec codec = await ui.instantiateImageCodec(list);
+        ui.FrameInfo frame = await codec.getNextFrame();
+        TimelineImage _imageAsset = TimelineImage();
+        asset = _imageAsset;
+        _imageAsset.image = frame.image;
+
+        dynamic width = assetMap["width"];
+        asset.width = width is int ? width.toDouble() : width;
+        dynamic height = assetMap["height"];
+        asset.height = height is int ? height.toDouble() : height;
+
+        timelineEntry.asset = asset;
+      }
+      allEntries.add(timelineEntry);
     }
 
     // sort the full list so they are in order of oldest to newest
