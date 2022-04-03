@@ -62,14 +62,18 @@ class _MyHomePageState extends State<MyHomePage>
     return Scaffold(
       appBar: null,
       body: Stack(
-        children: <Widget>[
-          Positioned.fill(child: TimelineWidget(showMenu: _onShowMenu)),
+        children: const <Widget>[
           Positioned.fill(
-            child: SlideTransition(
-              position: _menuOffset!,
-              child: MainMenuWidget(selectItem: _onHideMenu),
-            ),
+            child: TimelineWidget(
+                // showMenu: _onShowMenu,
+                ),
           ),
+          // Positioned.fill(
+          //   child: SlideTransition(
+          //     position: _menuOffset!,
+          //     child: MainMenuWidget(selectItem: _onHideMenu),
+          //   ),
+          // ),
         ],
       ),
     );

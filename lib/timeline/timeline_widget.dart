@@ -7,8 +7,11 @@ import 'package:sirah/timeline/timeline_utlis.dart';
 typedef ShowMenuCallback = Function();
 
 class TimelineWidget extends StatefulWidget {
-  final ShowMenuCallback showMenu;
-  const TimelineWidget({Key? key, required this.showMenu}) : super(key: key);
+  // final ShowMenuCallback showMenu;
+  const TimelineWidget({
+    Key? key,
+    // required this.showMenu,
+  }) : super(key: key);
 
   @override
   _TimelineWidgetState createState() => _TimelineWidgetState();
@@ -71,27 +74,23 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onScaleStart: _scaleStart,
-        onScaleUpdate: _scaleUpdate,
-        onScaleEnd: _scaleEnd,
-        onTapUp: _tapUp,
-        child: Stack(children: <Widget>[
+      onScaleStart: _scaleStart,
+      onScaleUpdate: _scaleUpdate,
+      onScaleEnd: _scaleEnd,
+      onTapUp: _tapUp,
+      child: Stack(
+        children: <Widget>[
           TimelineRenderWidget(
             timeline: _timeline,
             touchBubble: onTouchBubble,
           ),
           Container(
-              // padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              color: const Color.fromRGBO(238, 240, 242, 0.81),
-              height: 56.0,
-              width: double.infinity,
-              child: IconButton(
-                alignment: Alignment.centerLeft,
-                icon: const Icon(Icons.arrow_back_ios_new_sharp),
-                onPressed: () {
-                  widget.showMenu();
-                },
-              ))
-        ]));
+            color: const Color.fromRGBO(238, 240, 242, 0.81),
+            height: 56.0,
+            width: double.infinity,
+          ),
+        ],
+      ),
+    );
   }
 }
