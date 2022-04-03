@@ -1,7 +1,8 @@
 [
 	{
-		"start": -4600000000,
-		"label": "Earth",
+		"start": 570,
+		"end": 630,
+		"label": "Era of Muhammad (S.)",
 		"asset": 
 		{
 			"source": "earth.jpg",
@@ -10,7 +11,7 @@
 		}
 	},
 	{
-		"start": -3800000000,
+		"date": 571,
 		"label": "Life on Earth",
 		"asset": 
 		{
@@ -20,7 +21,7 @@
 		}
 	},
 	{
-		"start": -2100000000,
+		"date": 572,
 		"label": "Eukaryotes Evolved",
 		"asset": 
 		{
@@ -30,7 +31,7 @@
 		}
 	},
 	{
-		"start": -1300000000,
+		"date": 572,
 		"end": -1200000000,
 		"label": "Lots in here",
 		"asset": 
@@ -41,11 +42,11 @@
 		}
 	},
 	{
-		"date": -1290000000,
+		"date": 573,
 		"label": "Wow"
 	},
 	{
-		"date": -1280000000,
+		"date": 582,
 		"label": "Hello",
 		"asset": 
 		{
@@ -55,17 +56,15 @@
 		}
 	},
 	{
-		"start": -1270000000,
-		"end": -1255000000,
+		"date": 585,
 		"label": "Stuff here"
 	},
 	{
-		"start": -1260000000,
-		"end": -1255500000,
+		"date": 587,
 		"label": "Extra Stuff"
 	},
 	{
-		"date": -1255550000,
+		"date": 587.5,
 		"label": "A little more Stuff",
 		"asset": 
 		{
@@ -75,34 +74,34 @@
 		}
 	},
 	{
-		"start": -1250000000,
-		"end": -1240000000,
+		"date": 590,
 		"label": "Testing More"
 	},
 	{
-		"date": -1245000000,
+		"date": 595,
 		"label": "Aaaaand one More"
 	},
 	{
-		"date": -1100000000,
+		"date": 610,
 		"label": "First reproducing organisms"
 	},
 	{
-		"date": -570000000,
+		"date": 611,
 		"label": "First arthropods evolve"
 	},
 	{
-		"start": -250000000,
-		"end": -65000000,
+		"start": 612,
+		"end": 613,
 		"label": "Mesozoic Era"
 	},
 	{
-		"start": -200000000,
-		"end": -145000000,
+		"start": 618,
+		"end": 620,
 		"label": "Jurassic Period"
 	},
 	{
-		"start": -65000000,
+		"start": 630,
+		"end": 630,
 		"label": "Cenozoic Era"
 	}
 ]
