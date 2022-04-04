@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sirah">
+    package="com.arrijal.sirah">
    <application
         android:label="sirah"
         android:name="${applicationName}"

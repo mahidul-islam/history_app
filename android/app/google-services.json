@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "869608716212",
+    "project_id": "sirah-muhammad-s",
+    "storage_bucket": "sirah-muhammad-s.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869608716212:android:86df7a2dc2793d1cd0e4e1",
+        "android_client_info": {
+          "package_name": "com.arrijal.sirah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869608716212-d7ko0b00783o3bgjght06arb07mq8v65.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC05Olk-bv8lblZzRMu2C2tIfspxusfcv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869608716212-d7ko0b00783o3bgjght06arb07mq8v65.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

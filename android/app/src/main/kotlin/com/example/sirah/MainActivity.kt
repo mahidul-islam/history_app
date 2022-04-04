@@ -1,4 +1,4 @@
-package com.example.sirah
+package com.arrijal.sirah
 
 import io.flutter.embedding.android.FlutterActivity
 
