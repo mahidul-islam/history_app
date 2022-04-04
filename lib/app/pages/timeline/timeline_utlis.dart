@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:sirah/timeline/timeline_entry.dart';
+import 'package:sirah/app/pages/timeline/timeline_entry.dart';
 
 Color interpolateColor(Color from, Color to, double elapsed) {
   double r, g, b, a;

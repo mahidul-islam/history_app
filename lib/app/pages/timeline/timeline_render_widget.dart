@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sirah/timeline/ticks.dart';
+import 'package:sirah/app/pages/timeline/ticks.dart';
+import 'package:sirah/app/pages/timeline/timeline.dart';
+import 'package:sirah/app/pages/timeline/timeline_entry.dart';
 import "dart:ui" as ui;
 
-import 'package:sirah/timeline/timeline.dart';
-import 'package:sirah/timeline/timeline_entry.dart';
-import 'package:sirah/timeline/timeline_utlis.dart';
+import 'package:sirah/app/pages/timeline/timeline_utlis.dart';
 
 /// These two callbacks are used to detect if a bubble or an entry have been tapped.
 /// If that's the case, [ArticlePage] will be pushed onto the [Navigator] stack.

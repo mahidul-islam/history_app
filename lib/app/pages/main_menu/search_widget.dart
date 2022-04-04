@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import "../colors.dart";
+import 'package:sirah/colors.dart';
 
 class SearchWidget extends StatelessWidget {
   const SearchWidget({Key? key}) : super(key: key);

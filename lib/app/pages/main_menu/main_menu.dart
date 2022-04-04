@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sirah/colors.dart';
 
 import "./search_widget.dart";
 import "./main_menu_section.dart";
-import "../colors.dart";
 
 class MainMenuWidget extends StatelessWidget {
   final SelectItemCallback selectItem;

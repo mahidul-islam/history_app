@@ -1,9 +1,8 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sirah/timeline/timeline.dart';
+import 'package:sirah/app/pages/timeline/timeline.dart';
 
 /// This class is used by the [TimelineRenderWidget] to render the ticks on the left side of the screen.
 ///

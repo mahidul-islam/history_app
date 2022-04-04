@@ -4,8 +4,7 @@ import 'dart:typed_data';
 import "package:flutter/scheduler.dart";
 import "dart:ui" as ui;
 import "package:flutter/services.dart" show rootBundle;
-import 'package:sirah/timeline/timeline_entry.dart';
-import 'package:sirah/timeline/timeline_utlis.dart';
+import 'package:sirah/app/pages/timeline/timeline_entry.dart';
 
 typedef PaintCallback = Function();
 
