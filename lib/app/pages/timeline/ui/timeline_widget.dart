@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sirah/app/pages/article/article_widget.dart';
-import 'package:sirah/app/pages/timeline/timeline.dart';
-import 'package:sirah/app/pages/timeline/timeline_render_widget.dart';
-import 'package:sirah/app/pages/timeline/timeline_utlis.dart';
+import 'package:sirah/app/pages/timeline/model/timeline.dart';
+import 'package:sirah/app/pages/timeline/widget/timeline_render_widget.dart';
+import 'package:sirah/app/pages/timeline/util/timeline_utlis.dart';
 import 'package:sirah/app/routes/routes.dart';
 
 typedef ShowMenuCallback = Function();
@@ -41,11 +40,6 @@ class _TimelineWidgetState extends State<TimelineWidget> {
           .pushNamed(Routes.topic_details, arguments: <String, dynamic>{
         'article': _touchedBubble!.entry!,
       });
-      // Navigator.of(context)
-      //     .push(MaterialPageRoute(
-      //         builder: (BuildContext context) =>
-      //             ArticleWidget(article: _touchedBubble!.entry!)))
-      //     .then((value) => _touchedBubble = null);
     }
   }
 

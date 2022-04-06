@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:sirah/app/pages/timeline/timeline_entry.dart';
+import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
 import 'package:sirah/colors.dart';
 
 /// This widget will paint the article page.

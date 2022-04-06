@@ -4,47 +4,9 @@ import 'dart:typed_data';
 import "package:flutter/scheduler.dart";
 import "dart:ui" as ui;
 import "package:flutter/services.dart" show rootBundle;
-import 'package:sirah/app/pages/timeline/timeline_entry.dart';
+import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
 
 typedef PaintCallback = Function();
-
-// enum TimelineEntryType { era, incident }
-
-// class TimelineEntryAsset {
-//   late ui.Image image;
-//   double? width;
-//   double? height;
-//   double opacity = 0.0;
-//   double scale = 0.0;
-//   double scaleVelocity = 0.0;
-//   double y = 0.0;
-//   double velocity = 0.0;
-// }
-
-// class TimelineEntry {
-//   late TimelineEntryType type;
-//   double? start;
-//   double? end;
-//   String? label;
-
-//   TimelineEntry? parent;
-//   List<TimelineEntry>? children;
-
-//   double y = 0.0;
-//   double endY = 0.0;
-//   double length = 0.0;
-//   double opacity = 0.0;
-//   double labelOpacity = 0.0;
-//   double legOpacity = 0.0;
-//   double labelY = 0.0;
-//   double labelVelocity = 0.0;
-
-//   bool get isVisible {
-//     return opacity > 0.0;
-//   }
-
-//   TimelineEntryAsset? asset;
-// }
 
 class Timeline {
   double _start = 0.0;

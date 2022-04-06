@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sirah/app/pages/timeline/ticks.dart';
-import 'package:sirah/app/pages/timeline/timeline.dart';
-import 'package:sirah/app/pages/timeline/timeline_entry.dart';
+import 'package:sirah/app/pages/timeline/widget/ticks.dart';
+import 'package:sirah/app/pages/timeline/model/timeline.dart';
+import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
 import "dart:ui" as ui;
 
-import 'package:sirah/app/pages/timeline/timeline_utlis.dart';
+import 'package:sirah/app/pages/timeline/util/timeline_utlis.dart';
 
 /// These two callbacks are used to detect if a bubble or an entry have been tapped.
 /// If that's the case, [ArticlePage] will be pushed onto the [Navigator] stack.
@@ -46,7 +46,7 @@ class TimelineRenderObject extends RenderBox {
 
   final Ticks _ticks = Ticks();
   Timeline _timeline = Timeline();
-  List<TapTarget> _tapTargets = <TapTarget>[];
+  final List<TapTarget> _tapTargets = <TapTarget>[];
   TouchBubbleCallback? touchBubble;
 
   Timeline get timeline => _timeline;

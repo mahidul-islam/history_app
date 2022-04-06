@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sirah/app/pages/article/article_widget.dart';
-import 'package:sirah/app/pages/timeline/timeline_entry.dart';
-import 'package:sirah/app/pages/timeline/timeline_widget.dart';
+import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
+import 'package:sirah/app/pages/timeline/ui/timeline_widget.dart';
 import 'package:sirah/shared/analytics.dart';
 import 'package:sirah/shared/locator.dart';
 
