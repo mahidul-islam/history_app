@@ -1,8 +1,12 @@
+import 'package:dartz/dartz.dart' as d;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sirah/app/pages/timeline/model/timeline.dart';
+import 'package:sirah/app/pages/timeline/repo/timeline_repo.dart';
 import 'package:sirah/app/pages/timeline/widget/timeline_render_widget.dart';
 import 'package:sirah/app/pages/timeline/util/timeline_utlis.dart';
 import 'package:sirah/app/routes/routes.dart';
+import 'package:sirah/shared/util/loader.dart';
 
 typedef ShowMenuCallback = Function();
 
@@ -18,7 +22,7 @@ class TimelineWidget extends StatefulWidget {
 }
 
 class _TimelineWidgetState extends State<TimelineWidget> {
-  final Timeline _timeline = Timeline();
+  Timeline? _timeline;
 
   Offset? _lastFocalPoint;
   double _scaleStartYearStart = -100.0;
@@ -26,12 +30,33 @@ class _TimelineWidgetState extends State<TimelineWidget> {
 
   TapTarget? _touchedBubble;
 
+  @override
+  void initState() {
+    _getTimeline();
+    super.initState();
+  }
+
+  Future<void> _getTimeline() async {
+    TimelineApi _api = HttpTimelineApi();
+    d.Either<String, Timeline> _result =
+        await _api.getTopicList(forceRefresh: true);
+    _result.fold((String error) {
+      if (kDebugMode) {
+        print('show error');
+      }
+    }, (Timeline timeline) {
+      setState(() {
+        _timeline = timeline;
+      });
+    });
+  }
+
   void _scaleStart(ScaleStartDetails details) {
     _lastFocalPoint = details.focalPoint;
-    _scaleStartYearStart = _timeline.start;
-    _scaleStartYearEnd = _timeline.end;
-    _timeline.isInteracting = true;
-    _timeline.setViewport(velocity: 0.0, animate: true);
+    _scaleStartYearStart = _timeline!.start;
+    _scaleStartYearEnd = _timeline!.end;
+    _timeline!.isInteracting = true;
+    _timeline!.setViewport(velocity: 0.0, animate: true);
   }
 
   void _tapUp(TapUpDetails details) {
@@ -56,7 +81,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
     double focalDiff =
         (_scaleStartYearStart + _lastFocalPoint!.dy * scale) - focus;
 
-    _timeline.setViewport(
+    _timeline!.setViewport(
         start: focus + (_scaleStartYearStart - focus) / changeScale + focalDiff,
         end: focus + (_scaleStartYearEnd - focus) / changeScale + focalDiff,
         height: context.size!.height,
@@ -64,14 +89,18 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   }
 
   void _scaleEnd(ScaleEndDetails details) {
-    double scale = (_timeline.end - _timeline.start) / context.size!.height;
-    _timeline.isInteracting = false;
-    _timeline.setViewport(
+    double scale = (_timeline!.end - _timeline!.start) / context.size!.height;
+    _timeline!.isInteracting = false;
+    _timeline!.setViewport(
         velocity: details.velocity.pixelsPerSecond.dy * scale, animate: true);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_timeline == null) {
+      return Loader.circular();
+    }
+
     return GestureDetector(
       onScaleStart: _scaleStart,
       onScaleUpdate: _scaleUpdate,
@@ -80,7 +109,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
       child: Stack(
         children: <Widget>[
           TimelineRenderWidget(
-            timeline: _timeline,
+            timeline: _timeline!,
             touchBubble: onTouchBubble,
           ),
           Container(

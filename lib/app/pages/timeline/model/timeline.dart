@@ -66,8 +66,8 @@ class Timeline {
   static const double ViewportPaddingBottom = 100.0;
   static const int SteadyMilliseconds = 500;
 
-  Timeline() {
-    loadFromBundle("assets/timeline.json").then((bool success) {
+  Timeline({required String data}) {
+    loadFromBundle(data).then((bool success) {
       // Double check: Make sure we have height by now...
       if (_entries != null) {
         double scale = _height == 0.0
@@ -84,9 +84,9 @@ class Timeline {
     setViewport(start: 1536.0, end: 3072.0);
   }
 
-  Future<bool> loadFromBundle(String filename) async {
+  Future<bool> loadFromBundle(String data) async {
     List<TimelineEntry> allEntries = <TimelineEntry>[];
-    String data = await rootBundle.loadString(filename);
+    // String data = await rootBundle.loadString(filename);
     List jsonEntries = json.decode(data) as List;
     for (dynamic entry in jsonEntries) {
       Map map = entry as Map;

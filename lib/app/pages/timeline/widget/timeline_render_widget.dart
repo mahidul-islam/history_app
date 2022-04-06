@@ -45,7 +45,8 @@ class TimelineRenderObject extends RenderBox {
   ];
 
   final Ticks _ticks = Ticks();
-  Timeline _timeline = Timeline();
+  // It needs to be initialized but this is causing error.
+  Timeline _timeline = Timeline(data: '');
   final List<TapTarget> _tapTargets = <TapTarget>[];
   TouchBubbleCallback? touchBubble;
 
