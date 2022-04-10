@@ -5,6 +5,8 @@ import "package:flutter/scheduler.dart";
 import "dart:ui" as ui;
 import "package:flutter/services.dart" show rootBundle;
 import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
+import 'package:sirah/shared/image_service.dart';
+import 'package:sirah/shared/locator.dart';
 
 typedef PaintCallback = Function();
 
@@ -121,13 +123,14 @@ class Timeline {
         TimelineAsset asset = TimelineAsset();
         Map assetMap = map["asset"] as Map;
         String source = assetMap["source"];
-        ByteData data = await rootBundle.load("assets/" + source);
-        Uint8List list = Uint8List.view(data.buffer);
-        ui.Codec codec = await ui.instantiateImageCodec(list);
-        ui.FrameInfo frame = await codec.getNextFrame();
+        // ByteData data = await rootBundle.load("assets/" + source);
+        // Uint8List list = Uint8List.view(data.buffer);
+        // ui.Codec codec = await ui.instantiateImageCodec(list);
+        // ui.FrameInfo frame = await codec.getNextFrame();
         TimelineImage _imageAsset = TimelineImage();
         asset = _imageAsset;
-        _imageAsset.image = frame.image;
+        _imageAsset.image = source;
+        locator<ImageService>().getImage(source);
 
         dynamic width = assetMap["width"];
         asset.width = width is int ? width.toDouble() : width;

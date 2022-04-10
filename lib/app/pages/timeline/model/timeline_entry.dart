@@ -19,7 +19,7 @@ class TimelineAsset {
 
 /// A renderable image.
 class TimelineImage extends TimelineAsset {
-  ui.Image? image;
+  String? image;
 }
 
 /// This asset also has information regarding its animations.

@@ -5,6 +5,8 @@ import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
 import "dart:ui" as ui;
 
 import 'package:sirah/app/pages/timeline/util/timeline_utlis.dart';
+import 'package:sirah/shared/image_service.dart';
+import 'package:sirah/shared/locator.dart';
 
 /// These two callbacks are used to detect if a bubble or an entry have been tapped.
 /// If that's the case, [ArticlePage] will be pushed onto the [Navigator] stack.
@@ -119,8 +121,9 @@ class TimelineRenderObject extends RenderBox {
 
           /// Draw the correct asset.
           if (asset is TimelineImage) {
+            ui.Image? img = locator<ImageService>().getImage(asset.image!);
             canvas.drawImageRect(
-                asset.image!,
+                img, // asset.image!,
                 Rect.fromLTWH(0.0, 0.0, asset.width!, asset.height!),
                 Rect.fromLTWH(
                     offset.dx + size.width - w, asset.y, w * rs, h * rs),
