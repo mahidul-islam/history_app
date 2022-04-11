@@ -27,6 +27,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    archivesBaseName = "sirah"
+
     compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
@@ -49,6 +51,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        archivesBaseName = "sirah"
     }
 
     buildTypes {
