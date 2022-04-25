@@ -44,4 +44,4 @@ flutter:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/sirah.jpg"
+  image_path: "assets/sirah.png"

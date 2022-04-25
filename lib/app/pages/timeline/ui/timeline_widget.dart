@@ -47,8 +47,14 @@ class _TimelineWidgetState extends State<TimelineWidget> {
     }, (Timeline timeline) {
       setState(() {
         _timeline = timeline;
+        scaleProper();
       });
     });
+  }
+
+  Future<void> scaleProper() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    _timeline?.setViewport(start: 550, end: 650, animate: true);
   }
 
   void _scaleStart(ScaleStartDetails details) {
@@ -101,23 +107,30 @@ class _TimelineWidgetState extends State<TimelineWidget> {
       return Loader.circular();
     }
 
-    return GestureDetector(
-      onScaleStart: _scaleStart,
-      onScaleUpdate: _scaleUpdate,
-      onScaleEnd: _scaleEnd,
-      onTapUp: _tapUp,
-      child: Stack(
-        children: <Widget>[
-          TimelineRenderWidget(
-            timeline: _timeline!,
-            touchBubble: onTouchBubble,
-          ),
-          Container(
-            color: const Color.fromRGBO(238, 240, 242, 0.81),
-            height: 56.0,
-            width: double.infinity,
-          ),
-        ],
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        setState(() {
+          _timeline?.setViewport(start: 550, end: 650, animate: true);
+        });
+      }),
+      body: GestureDetector(
+        onScaleStart: _scaleStart,
+        onScaleUpdate: _scaleUpdate,
+        onScaleEnd: _scaleEnd,
+        onTapUp: _tapUp,
+        child: Stack(
+          children: <Widget>[
+            TimelineRenderWidget(
+              timeline: _timeline!,
+              touchBubble: onTouchBubble,
+            ),
+            Container(
+              color: const Color.fromRGBO(238, 240, 242, 0.81),
+              height: 56.0,
+              width: double.infinity,
+            ),
+          ],
+        ),
       ),
     );
   }
