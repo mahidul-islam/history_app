@@ -108,11 +108,19 @@ class _TimelineWidgetState extends State<TimelineWidget> {
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        setState(() {
-          _timeline?.setViewport(start: 550, end: 650, animate: true);
-        });
-      }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _timeline?.setViewport(start: 550, end: 650, animate: true);
+          });
+        },
+        child: const Icon(
+          Icons.restore,
+          size: 32,
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.greenAccent,
+      ),
       body: GestureDetector(
         onScaleStart: _scaleStart,
         onScaleUpdate: _scaleUpdate,
