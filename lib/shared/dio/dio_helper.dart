@@ -5,8 +5,8 @@ mixin DioHelper {
   static Dio? _dio;
   static DioCacheManager? _manager;
 
-  static const Duration maxApiCacheAge = Duration(hours: 1);
-  static const Duration maxApiStaleAge = Duration(hours: 3);
+  static const Duration maxApiCacheAge = Duration(days: 1);
+  static const Duration maxApiStaleAge = Duration(days: 90);
 
   static Future<Options> getDefaultOptions(
       {bool isCacheEnabled = true,

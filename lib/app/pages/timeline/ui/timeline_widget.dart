@@ -117,9 +117,9 @@ class _TimelineWidgetState extends State<TimelineWidget> {
         child: const Icon(
           Icons.restore,
           size: 32,
-          color: Colors.black,
+          color: Colors.white,
         ),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 125, 195, 184),
       ),
       body: GestureDetector(
         onScaleStart: _scaleStart,
