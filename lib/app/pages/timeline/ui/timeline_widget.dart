@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart' as d;
+import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sirah/app/pages/timeline/model/timeline.dart';
+import 'package:sirah/app/pages/timeline/model/timeline_entry.dart';
 import 'package:sirah/app/pages/timeline/repo/timeline_repo.dart';
 import 'package:sirah/app/pages/timeline/widget/timeline_render_widget.dart';
 import 'package:sirah/app/pages/timeline/util/timeline_utlis.dart';
@@ -37,6 +39,9 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   }
 
   Future<void> _getTimeline() async {
+    setState(() {
+      _timeline = null;
+    });
     TimelineApi _api = HttpTimelineApi();
     d.Either<String, Timeline> _result =
         await _api.getTopicList(forceRefresh: true);
@@ -68,7 +73,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   void _tapUp(TapUpDetails details) {
     if (_touchedBubble != null) {
       Navigator.of(context)
-          .pushNamed(Routes.topic_details, arguments: <String, dynamic>{
+          .pushNamed(Routes.topicDetails, arguments: <String, dynamic>{
         'article': _touchedBubble!.entry!,
       });
     }
@@ -108,18 +113,84 @@ class _TimelineWidgetState extends State<TimelineWidget> {
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _timeline?.setViewport(start: 564, end: 590, animate: true);
-          });
-        },
-        child: const Icon(
-          Icons.restore,
-          size: 32,
+      floatingActionButton: FabCircularMenu(
+        ringColor: const Color.fromARGB(255, 125, 195, 184).withOpacity(0.8),
+        fabCloseIcon: const Icon(Icons.clear_rounded, color: Colors.white),
+        fabOpenIcon: const Icon(
+          Icons.add,
+          size: 35,
           color: Colors.white,
         ),
-        backgroundColor: const Color.fromARGB(255, 125, 195, 184),
+        fabCloseColor: const Color.fromARGB(255, 125, 195, 184),
+        fabOpenColor: const Color.fromARGB(255, 238, 155, 75),
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.info_outline_rounded,
+                  size: 32,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.topicDetails,
+                      arguments: <String, dynamic>{
+                        'article': TimelineEntry()
+                          ..label = 'আমাদের সম্পর্কে'
+                          ..articleFilename = 'about_us.txt',
+                      });
+                },
+              ),
+              const Text(
+                'About Us',
+                style: TextStyle(color: Colors.white),
+              )
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.cached_rounded,
+                  size: 32,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _getTimeline();
+                  });
+                },
+              ),
+              const Text(
+                'Reload',
+                style: TextStyle(color: Colors.white),
+              )
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.replay,
+                  size: 32,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _timeline?.setViewport(start: 564, end: 590, animate: true);
+                  });
+                },
+              ),
+              const Text(
+                'Reset',
+                style: TextStyle(color: Colors.white),
+              )
+            ],
+          ),
+        ],
       ),
       body: GestureDetector(
         onScaleStart: _scaleStart,

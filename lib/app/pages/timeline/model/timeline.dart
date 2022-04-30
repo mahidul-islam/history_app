@@ -117,6 +117,10 @@ class Timeline {
         timelineEntry.label = map["label"] as String;
       }
 
+      if (map.containsKey("article")) {
+        timelineEntry.articleFilename = map["article"] as String;
+      }
+
       if (map.containsKey("asset")) {
         TimelineAsset asset = TimelineAsset();
         Map assetMap = map["asset"] as Map;

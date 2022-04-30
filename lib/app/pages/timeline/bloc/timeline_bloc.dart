@@ -6,8 +6,6 @@ part 'timeline_state.dart';
 
 class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   TimelineBloc() : super(TimelineInitial()) {
-    on<TimelineEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<TimelineEvent>((event, emit) {});
   }
 }
