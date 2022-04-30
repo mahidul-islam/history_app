@@ -54,7 +54,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
 
   Future<void> scaleProper() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    _timeline?.setViewport(start: 550, end: 650, animate: true);
+    _timeline?.setViewport(start: 564, end: 590, animate: true);
   }
 
   void _scaleStart(ScaleStartDetails details) {
@@ -111,7 +111,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _timeline?.setViewport(start: 550, end: 650, animate: true);
+            _timeline?.setViewport(start: 564, end: 590, animate: true);
           });
         },
         child: const Icon(
