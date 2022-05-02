@@ -29,6 +29,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   Offset? _lastFocalPoint;
   double _scaleStartYearStart = -100.0;
   double _scaleStartYearEnd = 100.0;
+  bool zooming = false;
 
   TapTarget? _touchedBubble;
 
@@ -36,6 +37,24 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   void initState() {
     _getTimeline();
     super.initState();
+  }
+
+  Future<void> _zoom({required bool zoomIn}) async {
+    Offset _f = Offset(MediaQuery.of(context).size.width / 2,
+        MediaQuery.of(context).size.height / 2);
+
+    while (zooming) {
+      _scaleStart(ScaleStartDetails(
+        focalPoint: _f,
+      ));
+      _scaleUpdate(ScaleUpdateDetails(
+        scale: zoomIn ? 1.1 : 0.9,
+        horizontalScale: 1.0,
+        verticalScale: 1.0,
+        focalPoint: _f,
+      ));
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
   }
 
   Future<void> _getTimeline() async {
@@ -144,6 +163,48 @@ class _TimelineWidgetState extends State<TimelineWidget> {
               ),
               const Text(
                 'About Us',
+                style: TextStyle(color: Colors.white),
+              )
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTapDown: (_) {
+                      zooming = true;
+                      _zoom(zoomIn: true);
+                    },
+                    onTapUp: (_) {
+                      zooming = false;
+                    },
+                    child: const Icon(
+                      Icons.add_circle_outline,
+                      size: 32,
+                      color: Colors.white,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTapDown: (_) {
+                      zooming = true;
+                      _zoom(zoomIn: false);
+                    },
+                    onTapUp: (_) {
+                      zooming = false;
+                    },
+                    child: const Icon(
+                      Icons.remove_circle_outline,
+                      size: 32,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              const Text(
+                'Zoom InOut',
                 style: TextStyle(color: Colors.white),
               )
             ],

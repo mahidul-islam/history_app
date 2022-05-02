@@ -37,9 +37,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/search_icon.png
-    - assets/flutter_logo.png
-    - assets/right_arrow.png
     - assets/articles/
 
 flutter_icons:
