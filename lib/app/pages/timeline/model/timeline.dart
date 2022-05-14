@@ -212,7 +212,7 @@ class Timeline {
     } else if (!_isFrameScheduled) {
       _isFrameScheduled = true;
       _lastFrameTime = 0.0;
-      SchedulerBinding.instance!.scheduleFrameCallback(beginFrame);
+      SchedulerBinding.instance.scheduleFrameCallback(beginFrame);
     }
   }
 
@@ -222,7 +222,7 @@ class Timeline {
         timeStamp.inMicroseconds / Duration.microsecondsPerMillisecond / 1000.0;
     if (_lastFrameTime == 0) {
       _lastFrameTime = t;
-      SchedulerBinding.instance!.scheduleFrameCallback(beginFrame);
+      SchedulerBinding.instance.scheduleFrameCallback(beginFrame);
       return;
     }
 
@@ -231,7 +231,7 @@ class Timeline {
 
     if (!advance(elapsed, true) && !_isFrameScheduled) {
       _isFrameScheduled = true;
-      SchedulerBinding.instance!.scheduleFrameCallback(beginFrame);
+      SchedulerBinding.instance.scheduleFrameCallback(beginFrame);
     }
 
     if (onNeedPaint != null) {
